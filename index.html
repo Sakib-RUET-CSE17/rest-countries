@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest Countries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <style>
+        #country-details {
+            display: none;
+        }
+        
+        .flag {
+            /* height: 100px; */
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div class="container">
+        <h1 class="text-center">Countries</h1>
+
+    </div>
+
+    <div id="country-details" class="container ">
+
+        <div class="row border border-primary text-center">
+            <div class="card col" style="width: 18rem;">
+                <img id="flag-src" src="https://restcountries.eu/data/bgd.svg" class="card-img-top img-fluid flag" alt="flag">
+                <div class="card-body">
+                    <h1 class="card-text">Country: <span id="country">Bangladesh</span></h1>
+                    <h2 class="card-text">Capital: <span id="capital">Dhaka</span></h2>
+                    <p>Area: <span id="area">1,47,570</span> sq.km</p>
+                    <p>Currency: <span id="currency">Bangladeshi taka</span></p>
+                    <p>Language: <span id="language">Bangla</span></p>
+                    <p>Population: <span id="population">161006790</span></p>
+                    <p>Region: <span id="region">Asia</span></p>
+                    <p>Subregion: <span id="sub-region">Southern Asia</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script>
+        const container = document.getElementsByClassName('container')[0]
+
+
+
+
+        let country1 = 'Desh1'
+        let country2 = 'Desh2'
+        let country3 = 'Desh3'
+        let newDiv = document.createElement('div')
+
+
+        fetch('https://restcountries.eu/rest/v2/all')
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data[0])
+                for (let i = 2; i < data.length; i += 3) {
+
+                    country1 = '<h1>' + data[i - 2].name + '<\h1>' + '<h6>' + data[i - 2].capital + '<\h6>'
+                    country2 = '<h1>' + data[i - 1].name + '<\h1>' + '<h6>' + data[i - 1].capital + '<\h6>'
+                    country3 = '<h1>' + data[i].name + '<\h1>' + '<h6>' + data[i].capital + '<\h6>'
+                    newDiv = document.createElement('div')
+
+                    newDiv.innerHTML = '<div class="row"><div class="col-sm border border-primary">' + (i - 1) + '. ' +
+                        country1 + '<button onclick="handleDetailsBtn()">Details</button>' +
+                        '</div><div class="col-sm border border-primary">' + (i) + '. ' +
+                        country2 + '<button onclick="handleDetailsBtn()">Details</button>' +
+                        '</div><div class="col-sm border border-primary">' + (i + 1) + '. ' +
+                        country3 + '<button onclick="handleDetailsBtn()">Details</button>' +
+                        '</div></div>'
+                    container.appendChild(newDiv)
+                }
+            })
+            .catch(error => alert(error))
+
+        function handleDetailsBtn() {
+            const country = event.target.parentNode.parentNode.childNodes[1].innerText
+            console.log(event.target.parentNode.parentNode.childNodes[3])
+
+            container.style.display = 'none'
+            const countryDetails = document.getElementById('country-details')
+
+            countryDetails.style.display = 'block'
+
+            fetch('https://restcountries.eu/rest/v2/name/' + country)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data[0])
+                    const flagSrc = document.getElementById('flag-src')
+                    flagSrc.src = data[0].flag
+                    document.getElementById('country').innerText = data[0].name
+                    document.getElementById('capital').innerText = data[0].capital
+                    document.getElementById('region').innerText = data[0].region
+                    document.getElementById('area').innerText = data[0].area
+                    document.getElementById('sub-region').innerText = data[0].subregion
+                    document.getElementById('currency').innerText = data[0].currencies[0].name
+                    document.getElementById('language').innerText = data[0].languages[0].name
+                    document.getElementById('population').innerText = data[0].population
+
+                })
+                .catch(error => alert(error))
+
+        }
+    </script>
+</body>
+
+</html>
