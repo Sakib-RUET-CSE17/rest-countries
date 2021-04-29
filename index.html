@@ -35,6 +35,10 @@
                     <p>Population: <span id="population">161006790</span></p>
                     <p>Region: <span id="region">Asia</span></p>
                     <p>Subregion: <span id="sub-region">Southern Asia</span></p>
+                    <div>
+                        <p>National Anthem:</p>
+                        <audio id="anthem" controls src="http://www.nationalanthems.info/bd.mp3"></audio>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,6 +58,7 @@
             .catch(error => alert(error))
         let i = 0;
         const displayCountries = countries => {
+            // console.log(countries)
             const countriesDiv = document.getElementById('countries')
             countries.forEach(country => {
                 const countryDiv = document.createElement('div')
@@ -63,19 +68,21 @@
                     <p>${country.capital}<\p>
                     <button onclick="displayCountryDetail('${country.name}')">Details</button>
                     `
+                    // console.log(country, countryInfo)
                 countryDiv.innerHTML = countryInfo
 
                 countriesDiv.appendChild(countryDiv)
             })
         }
         const displayCountryDetail = name => {
-            const url = `https://restcountries.eu/rest/v2/name/${name}`
+            const url = `https://restcountries.eu/rest/v2/name/${name}?fullText=true`
             fetch(url)
                 .then(res => res.json())
                 .then(data => renderCountryInfo(data[0]))
                 .catch(error => alert(error))
         }
         const renderCountryInfo = (country) => {
+            // console.log(country)
             const container = document.getElementById('countries')
             container.style.display = 'none'
             const countryDetails = document.getElementById('country-details')
@@ -91,6 +98,7 @@
             document.getElementById('currency').innerText = country.currencies[0].name
             document.getElementById('language').innerText = country.languages[0].name
             document.getElementById('population').innerText = country.population
+            document.getElementById('anthem').src = `http://www.nationalanthems.info/${country.alpha2Code.toLowerCase()}.mp3`
         }
     </script>
 </body>
